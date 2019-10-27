@@ -14,11 +14,6 @@
     "node": true,
     "mocha": true
   },
-  "settings": {
-    "react": {
-      "pragma": "h"
-    }
-  },
   "rules": {
     "jsx-a11y/anchor-is-valid": "off",
     "import/no-unresolved": "off",
@@ -26,23 +21,6 @@
     "global-require": "off",
     "import/no-dynamic-require": "off",
     "no-prototype-builtins": "off",
-    "react/react-in-jsx-scope": "off",
-    "react/jsx-filename-extension": "off",
-    "react/prop-types": "off",
-    "import/no-absolute-path": "off",
-    "react/jsx-no-bind": [2, { "ignoreRefs": true }],
-    "react/jsx-no-duplicate-props": 2,
-    "react/self-closing-comp": 2,
-    "react/prefer-es6-class": 2,
-    "react/no-string-refs": 2,
-    "react/require-render-return": 2,
-    "react/no-find-dom-node": 2,
-    "react/no-is-mounted": 2,
-    "react/jsx-no-comment-textnodes": 2,
-    "react/jsx-curly-spacing": 2,
-    "react/jsx-no-undef": 2,
-    "react/jsx-uses-react": 2,
-    "react/jsx-uses-vars": 2,
     "no-empty": 0,
     "no-console": 0,
     "no-empty-pattern": 0,
