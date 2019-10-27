@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import dat from 'dat.gui';
 import cubeFace from '/src/assets/images/rubiks-face.png';
+import rotate from '/src/js/rotate';
 
 import {
   initStats,
   initRenderer,
   initCamera,
-  initTrackballControls,
-  reparentObject3D
+  initTrackballControls
 } from './utils';
 
 export default function() {
@@ -174,5 +174,7 @@ export default function() {
     requestAnimationFrame(render);
     renderer.render(scene, camera);
   }
+
+  rotate();
   render();
 }

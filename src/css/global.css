@@ -2,3 +2,20 @@ body {
   margin: 0;
   overflow: hidden;
 }
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.wrapper button#rotate-button {
+  display: block;
+  position: absolute;
+  bottom: 50px;
+  padding: 20px;
+  width: 400px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 10px 0px #7b7b7b
+;
+}
