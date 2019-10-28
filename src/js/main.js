@@ -1,17 +1,14 @@
 import * as THREE from 'three';
 import dat from 'dat.gui';
 import cubeFace from '/src/assets/images/rubiks-face.png';
-import rotate from '/src/js/rotate';
+import Rotate from '/src/js/rotate';
 import Turn from '/src/js/turn';
 
-import {
-  initStats,
-  initRenderer,
-  initCamera,
-  initTrackballControls
-} from './utils';
+import { initStats, initRenderer, initCamera } from './utils';
 
 export default function() {
+  const canvas = document.getElementById('webgl-output');
+
   const stats = initStats();
 
   // Set up renderer
@@ -71,7 +68,12 @@ export default function() {
     rubiks.scale.copy(new THREE.Vector3(2, 2, 2));
     scene.add(rubiks);
     turn = Turn(rubiks);
+
+    const rotate = Rotate(rubiks);
+    rotate(canvas);
   });
+
+
 
   const controls = {
     turnX0: () => turn('x', 0),
