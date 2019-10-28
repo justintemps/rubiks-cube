@@ -69,28 +69,22 @@ export default function() {
         })
     );
 
-    cubes = [];
     rubiks = new THREE.Group();
 
     for (let x = 0; x < 3; x++) {
       for (let y = 0; y < 3; y++) {
         for (let z = 0; z < 3; z++) {
-          const cube = {};
+          // const cube = {};
           const cubeGeometry = new THREE.BoxGeometry(3, 3, 3);
-          cube.mesh = new THREE.Mesh(cubeGeometry, materials);
-          cube.mesh.position.set(x * 3 - 3, y * 3 - 3, z * 3 - 3);
-          cubes.push(cube);
+          const cube = new THREE.Mesh(cubeGeometry, materials);
+          cube.position.set(x * 3 - 3, y * 3 - 3, z * 3 - 3);
+          rubiks.add(cube);
         }
       }
     }
 
-    for (let i = 0; i < cubes.length; i++) {
-      rubiks.add(cubes[i].mesh);
-      rubiks.scale.copy(new THREE.Vector3(2, 2, 2));
-    }
-
+    rubiks.scale.copy(new THREE.Vector3(2, 2, 2));
     scene.add(rubiks);
-    // renderer.render(scene, camera);
   });
 
   /**
@@ -104,10 +98,10 @@ export default function() {
     // into a group so that we can turn them together
     const layers = [-3, 0, 3];
     const group = new THREE.Group();
-    const selection = cubes.filter(
-      cube => layers[layer] === Math.round(cube.mesh.position[axis])
+    const selection = rubiks.children.filter(
+      cube => layers[layer] === Math.round(cube.position[axis])
     );
-    selection.forEach(cube => group.add(cube.mesh));
+    selection.forEach(cube => group.add(cube));
     rubiks.add(group);
 
     let step = 0;
@@ -118,11 +112,10 @@ export default function() {
         step += THREE.Math.degToRad(controls.rotationSpeed);
         group.rotation[axis] = step * direction;
         requestAnimationFrame(executeTurn);
-        // renderer.render(scene, camera);
         // When the turn is complete, reparent the cubes back to the main
         // rubiks cube
       } else {
-        selection.forEach(({ mesh }) => rubiks.attach(mesh));
+        selection.forEach(cube => rubiks.attach(cube));
         rubiks.remove(group);
       }
     }
