@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import Stats from 'stats-js';
-import TrackballControls from 'three-trackballcontrols';
 
 /**
  * Utility functions for three.js kindly borrowed from

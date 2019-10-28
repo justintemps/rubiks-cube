@@ -6,6 +6,8 @@
  *
  * Code inspired from this blast from the past
  * https://stackoverflow.com/questions/19588602/three-js-rotate-object-on-mouse-down-and-move
+ *
+ * @TODO: this needs to be improved as the movement of the cube is quite erratic
  */
 export default function(scene) {
   let mouseDown = false,
