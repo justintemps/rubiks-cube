@@ -3,6 +3,7 @@ import dat from 'dat.gui';
 import cubeFace from '/src/assets/images/rubiks-face.png';
 import Rotate from '/src/js/rotate';
 import Turn from '/src/js/turn';
+import RayCaster from '/src/js/raycaster';
 
 import { initStats, initRenderer, initCamera } from './utils';
 
@@ -71,9 +72,10 @@ export default function() {
 
     const rotate = Rotate(rubiks);
     rotate(canvas);
+
+    const rayCaster = RayCaster(scene, camera);
+    renderer.domElement.addEventListener('click', rayCaster, false);
   });
-
-
 
   const controls = {
     turnX0: () => turn('x', 0),
