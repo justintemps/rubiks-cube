@@ -36,6 +36,9 @@ export default function(scene) {
   function onMouseUp(evt) {
     evt.preventDefault();
     mouseDown = false;
+    window.removeEventListener('mousemove', onMouseMove);
+    window.removeEventListener('mouseup', onMouseUp);
+    window.removeEventListener('mousedown', onMouseDown);
   }
 
   function rotateScene(deltaX, deltaY) {
@@ -47,9 +50,10 @@ export default function(scene) {
    * Closure applies listeners to canvas element
    * @param canvas element
    */
-  return canvas => {
-    canvas.addEventListener('mousemove', e => onMouseMove(e), false);
-    canvas.addEventListener('mousedown', e => onMouseDown(e), false);
-    canvas.addEventListener('mouseup', e => onMouseUp(e), false);
+
+  return () => {
+    window.addEventListener('mousemove', onMouseMove, false);
+    window.addEventListener('mousedown', onMouseDown, false);
+    window.addEventListener('mouseup', onMouseUp, false);
   };
 }

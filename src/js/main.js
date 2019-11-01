@@ -8,8 +8,6 @@ import RayCaster from '/src/js/raycaster';
 import { initStats, initRenderer, initCamera } from './utils';
 
 export default function() {
-  const canvas = document.getElementById('webgl-output');
-
   const stats = initStats();
 
   // Set up renderer
@@ -31,6 +29,9 @@ export default function() {
   directionalLight.intensity = 3.5;
   scene.add(ambientLight);
   scene.add(directionalLight);
+
+  // Set up Raycaster
+  const rayCaster = RayCaster(scene, camera);
 
   // Load the texture, when it's done:
   // 1. Build our rubiks cube
@@ -71,10 +72,16 @@ export default function() {
     turn = Turn(rubiks);
 
     const rotate = Rotate(rubiks);
-    rotate(canvas);
+    // rotate(canvas);
 
-    const rayCaster = RayCaster(scene, camera);
-    renderer.domElement.addEventListener('click', rayCaster, false);
+    const handleTurn = e => {
+      const intersects = rayCaster(e);
+      if (intersects.length > 0) {
+        rotate(intersects[0].object.parent);
+      }
+    };
+
+    renderer.domElement.addEventListener('click', handleTurn, false);
   });
 
   const controls = {
@@ -104,7 +111,6 @@ export default function() {
 
   function render() {
     stats.update();
-    directionalLight.position.copy(camera.position);
     requestAnimationFrame(render);
     renderer.render(scene, camera);
   }
