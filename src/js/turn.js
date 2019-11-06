@@ -33,9 +33,9 @@ export default function(rubiks) {
         step += THREE.Math.degToRad(ROTATION_SPEED);
         group.rotation[axis] = step * direction;
         requestAnimationFrame(executeTurn);
+      } else {
         // When the turn is complete, reparent the cubes back to the main
         // rubiks cube
-      } else {
         selection.forEach(cube => rubiks.attach(cube));
         rubiks.remove(group);
       }

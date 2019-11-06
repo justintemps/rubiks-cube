@@ -25,8 +25,8 @@ export default function(obj, evt) {
   }
 
   function rotateObj(deltaX, deltaY) {
-    obj.rotation.y += deltaX / 100;
     obj.rotation.x += deltaY / 100;
+    obj.rotation.y += deltaX / 100;
   }
 
   window.addEventListener('mousemove', onMouseMove, false);
