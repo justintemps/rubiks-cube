@@ -1,59 +1,34 @@
 /**
- * Takes a THREE object and returns a closure
- * that takes a canvas elements and applies
- * listeners that will rotate the object on click
- * @param - three.js object
+ * Takes an Object3D and an event from a handler
+ * and applies a rotation to the Object on mouse move
  *
- * Code inspired from this blast from the past
- * https://stackoverflow.com/questions/19588602/three-js-rotate-object-on-mouse-down-and-move
- *
- * @TODO: this needs to be improved as the movement of the cube is quite erratic
+ * @param {Object3D} - the object to rotate
+ * @param {MouseEvent} - passed from the event handler
  */
-export default function(scene) {
-  let mouseDown = false,
-    mouseX = 0,
-    mouseY = 0;
+export default function(obj, evt) {
+  let mouseX = evt.clientX;
+  let mouseY = evt.clientY;
 
-  function onMouseMove(evt) {
-    if (!mouseDown) {
-      return;
-    }
+  function onMouseMove(e) {
     evt.preventDefault();
-    let deltaX = evt.clientX - mouseX,
-      deltaY = evt.clientY - mouseY;
-    mouseX = evt.clientX;
-    mouseY = evt.clientY;
-    rotateScene(deltaX, deltaY);
+    let deltaX = e.clientX - mouseX;
+    let deltaY = e.clientY - mouseY;
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    rotateObj(deltaX, deltaY);
   }
 
-  function onMouseDown(evt) {
-    evt.preventDefault();
-    mouseDown = true;
-    mouseX = evt.clientX;
-    mouseY = evt.clientY;
-  }
-
-  function onMouseUp(evt) {
-    evt.preventDefault();
-    mouseDown = false;
+  function onMouseUp(e) {
+    e.preventDefault();
     window.removeEventListener('mousemove', onMouseMove);
     window.removeEventListener('mouseup', onMouseUp);
-    window.removeEventListener('mousedown', onMouseDown);
   }
 
-  function rotateScene(deltaX, deltaY) {
-    scene.rotation.y += deltaX / 100;
-    scene.rotation.x += deltaY / 100;
+  function rotateObj(deltaX, deltaY) {
+    obj.rotation.y += deltaX / 100;
+    obj.rotation.x += deltaY / 100;
   }
 
-  /**
-   * Closure applies listeners to canvas element
-   * @param canvas element
-   */
-
-  return () => {
-    window.addEventListener('mousemove', onMouseMove, false);
-    window.addEventListener('mousedown', onMouseDown, false);
-    window.addEventListener('mouseup', onMouseUp, false);
-  };
+  window.addEventListener('mousemove', onMouseMove, false);
+  window.addEventListener('mouseup', onMouseUp, false);
 }

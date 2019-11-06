@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import dat from 'dat.gui';
 import cubeFace from '/src/assets/images/rubiks-face.png';
-import Rotate from '/src/js/rotate';
+import rotate from '/src/js/rotate';
 import Turn from '/src/js/turn';
 import RayCaster from '/src/js/raycaster';
 
@@ -69,19 +69,17 @@ export default function() {
 
     rubiks.scale.copy(new THREE.Vector3(2, 2, 2));
     scene.add(rubiks);
-    turn = Turn(rubiks);
 
-    const rotate = Rotate(rubiks);
-    // rotate(canvas);
+    turn = Turn(rubiks);
 
     const handleTurn = e => {
       const intersects = rayCaster(e);
       if (intersects.length > 0) {
-        rotate(intersects[0].object.parent);
+        rotate(intersects[0].object.parent, e);
       }
     };
 
-    renderer.domElement.addEventListener('click', handleTurn, false);
+    renderer.domElement.addEventListener('mousedown', handleTurn, false);
   });
 
   const controls = {
