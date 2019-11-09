@@ -16,16 +16,21 @@ export default function() {
 
   // Set up camera
   const camera = initCamera();
-  camera.position.set(-30, 35, 30);
+  camera.position.set(0, 0, 53);
+  camera.lookAt(new THREE.Vector3(0, 0, 0));
 
   // Set up scene
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xaaaaaa);
 
+  // Set up Axes Helper
+  // const axesHelper = new THREE.AxesHelper(100);
+  // scene.add(axesHelper);
+
   // Set up lights
   const ambientLight = new THREE.AmbientLight(0x62eb1, 2.6);
   const directionalLight = new THREE.DirectionalLight(0xffffff);
-  directionalLight.position.set(-30, 30, 30);
+  directionalLight.position.copy(camera.position);
   directionalLight.intensity = 3.5;
   scene.add(ambientLight);
   scene.add(directionalLight);
@@ -68,6 +73,8 @@ export default function() {
     }
 
     rubiks.scale.copy(new THREE.Vector3(2, 2, 2));
+    rubiks.rotation.set(0.75, 0.75, 0);
+    rubiks.position.set(0, 3, 0);
     scene.add(rubiks);
 
     turn = Turn(rubiks);

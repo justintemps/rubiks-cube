@@ -11,8 +11,11 @@ export default function(obj, evt) {
 
   function onMouseMove(e) {
     evt.preventDefault();
-    let deltaX = e.clientX - mouseX;
-    let deltaY = e.clientY - mouseY;
+    // the object should rotate around the y axis when
+    // the mouse moves across the x axis and around the y
+    // axis when the mouse moves across the y axis
+    let deltaY = e.clientX - mouseX;
+    let deltaX = e.clientY - mouseY;
     mouseX = e.clientX;
     mouseY = e.clientY;
     rotateObj(deltaX, deltaY);
@@ -25,8 +28,8 @@ export default function(obj, evt) {
   }
 
   function rotateObj(deltaX, deltaY) {
-    obj.rotation.x += deltaY / 100;
-    obj.rotation.y += deltaX / 100;
+    obj.rotation.x += deltaX / 100;
+    obj.rotation.y += deltaY / 100;
   }
 
   window.addEventListener('mousemove', onMouseMove, false);
