@@ -1,3 +1,4 @@
+import { enableRotation } from '/src/js/controls';
 import RayCaster from '/src/js/raycaster';
 
 /**
@@ -45,12 +46,16 @@ function rotate(obj, evt) {
  * @param {THREE.Raycaster}
  */
 export default function initRotate(renderer, scene, camera) {
+  const state = { isEnabled : false };
+  enableRotation(state);
   const rayCaster = RayCaster(scene, camera);
+
   const handleRotate = e => {
     const intersects = rayCaster(e);
-    if (intersects.length > 0) {
+    if (state.isEnabled && intersects.length > 0) {
       rotate(intersects[0].object.parent, e);
     }
   };
-  return renderer.domElement.addEventListener('mousedown', handleRotate, false);
+
+  renderer.domElement.addEventListener('mousedown', handleRotate, false);
 }
