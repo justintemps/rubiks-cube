@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import dat from 'dat.gui';
 import cubeFace from '/src/assets/images/rubiks-face.png';
-import rotate from '/src/js/rotate';
+import initRotate from '/src/js/rotate';
 import Turn from '/src/js/turn';
-import RayCaster from '/src/js/raycaster';
+// import RayCaster from '/src/js/raycaster';
 
 import { initStats, initRenderer, initCamera } from './utils';
 
@@ -34,9 +34,6 @@ export default function() {
   directionalLight.intensity = 3.5;
   scene.add(ambientLight);
   scene.add(directionalLight);
-
-  // Set up Raycaster
-  const rayCaster = RayCaster(scene, camera);
 
   // Load the texture, when it's done:
   // 1. Build our rubiks cube
@@ -78,15 +75,7 @@ export default function() {
     scene.add(rubiks);
 
     turn = Turn(rubiks);
-
-    const handleTurn = e => {
-      const intersects = rayCaster(e);
-      if (intersects.length > 0) {
-        rotate(intersects[0].object.parent, e);
-      }
-    };
-
-    renderer.domElement.addEventListener('mousedown', handleTurn, false);
+    initRotate(renderer, scene, camera);
   });
 
   const controls = {

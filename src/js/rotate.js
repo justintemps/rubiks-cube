@@ -1,3 +1,5 @@
+import RayCaster from '/src/js/raycaster';
+
 /**
  * Takes an Object3D and an event from a handler
  * and applies a rotation to the Object on mouse move
@@ -5,7 +7,7 @@
  * @param {Object3D} - the object to rotate
  * @param {MouseEvent} - passed from the event handler
  */
-export default function(obj, evt) {
+function rotate(obj, evt) {
   let mouseX = evt.clientX;
   let mouseY = evt.clientY;
 
@@ -34,4 +36,21 @@ export default function(obj, evt) {
 
   window.addEventListener('mousemove', onMouseMove, false);
   window.addEventListener('mouseup', onMouseUp, false);
+}
+
+/**
+ * Initialize Rubiks cube rotation
+ *
+ * @param {THREE.WebGLRenderer}
+ * @param {THREE.Raycaster}
+ */
+export default function initRotate(renderer, scene, camera) {
+  const rayCaster = RayCaster(scene, camera);
+  const handleRotate = e => {
+    const intersects = rayCaster(e);
+    if (intersects.length > 0) {
+      rotate(intersects[0].object.parent, e);
+    }
+  };
+  return renderer.domElement.addEventListener('mousedown', handleRotate, false);
 }
