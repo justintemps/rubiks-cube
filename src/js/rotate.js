@@ -1,5 +1,6 @@
-import { enableRotation } from '/src/js/controls';
-import RayCaster from '/src/js/raycaster';
+import * as THREE from "three";
+import { enableRotation } from "/src/js/controls";
+import RayCaster from "/src/js/raycaster";
 
 /**
  * Takes an Object3D and an event from a handler
@@ -26,8 +27,8 @@ function rotate(obj, evt) {
 
   function onMouseUp(e) {
     e.preventDefault();
-    window.removeEventListener('mousemove', onMouseMove);
-    window.removeEventListener('mouseup', onMouseUp);
+    window.removeEventListener("mousemove", onMouseMove);
+    window.removeEventListener("mouseup", onMouseUp);
   }
 
   function rotateObj(deltaX, deltaY) {
@@ -35,8 +36,8 @@ function rotate(obj, evt) {
     obj.rotation.y += deltaY / 100;
   }
 
-  window.addEventListener('mousemove', onMouseMove, false);
-  window.addEventListener('mouseup', onMouseUp, false);
+  window.addEventListener("mousemove", onMouseMove, false);
+  window.addEventListener("mouseup", onMouseUp, false);
 }
 
 /**
@@ -46,16 +47,53 @@ function rotate(obj, evt) {
  * @param {THREE.Raycaster}
  */
 export default function initRotate(renderer, scene, camera) {
-  const state = { isEnabled : false };
+  const state = { isEnabled: false };
   enableRotation(state);
   const rayCaster = RayCaster(scene, camera);
 
   const handleRotate = e => {
     const intersects = rayCaster(e);
-    if (state.isEnabled && intersects.length > 0) {
-      rotate(intersects[0].object.parent, e);
+    if (intersects.length > 0) {
+      const selectedCube = intersects[0].object;
+      const rubiks = intersects[0].object.parent;
+
+      if (state.isEnabled) {
+        return rotate(rubiks, e);
+      }
+
+      /* WORK IN PROGRESS YOU ARE HERE */
+      // Put all of the cubes in the layer we want to turn
+      // into a group so that we can turn them together
+      const selectedCubeLayer = Math.round(selectedCube.position["x"]);
+      const group = new THREE.Group();
+      const selection = rubiks.children.filter(
+        cube => selectedCubeLayer === Math.round(cube.position["x"])
+      );
+      selection.forEach(cube => group.add(cube));
+      rubiks.add(group);
+
+      let step = 0;
+
+      const ROTATION_SPEED = 3;
+      const direction = 1;
+
+      // Execute the turn in the given direcftion
+      function executeTurn() {
+        if (step < THREE.Math.degToRad(90)) {
+          step += THREE.Math.degToRad(ROTATION_SPEED);
+          group.rotation["x"] = step * direction;
+          requestAnimationFrame(executeTurn);
+        } else {
+          // When the turn is complete, reparent the cubes back to the main
+          // rubiks cube
+          selection.forEach(cube => rubiks.attach(cube));
+          rubiks.remove(group);
+        }
+      }
+
+      executeTurn();
     }
   };
 
-  renderer.domElement.addEventListener('mousedown', handleRotate, false);
+  renderer.domElement.addEventListener("mousedown", handleRotate, false);
 }
