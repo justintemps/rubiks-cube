@@ -1,6 +1,6 @@
-import * as THREE from "three";
-import { enableRotation } from "/src/js/controls";
-import RayCaster from "/src/js/raycaster";
+import * as THREE from 'three';
+import { enableRotation } from '/src/js/controls';
+import RayCaster from '/src/js/raycaster';
 
 /**
  * Takes an Object3D and an event from a handler
@@ -27,8 +27,8 @@ function rotate(obj, evt) {
 
   function onMouseUp(e) {
     e.preventDefault();
-    window.removeEventListener("mousemove", onMouseMove);
-    window.removeEventListener("mouseup", onMouseUp);
+    window.removeEventListener('mousemove', onMouseMove);
+    window.removeEventListener('mouseup', onMouseUp);
   }
 
   function rotateObj(deltaX, deltaY) {
@@ -36,8 +36,39 @@ function rotate(obj, evt) {
     obj.rotation.y += deltaY / 100;
   }
 
-  window.addEventListener("mousemove", onMouseMove, false);
-  window.addEventListener("mouseup", onMouseUp, false);
+  window.addEventListener('mousemove', onMouseMove, false);
+  window.addEventListener('mouseup', onMouseUp, false);
+}
+
+function turn(obj, evt, axis = 'x') {
+  let mouseX = evt.clientX;
+  let mouseY = evt.clientY;
+
+  function onMouseMove(e) {
+    evt.preventDefault();
+    // the object should rotate around the y axis when
+    // the mouse moves across the x axis and around the y
+    // axis when the mouse moves across the y axis
+    let deltaY = e.clientX - mouseX;
+    let deltaX = e.clientY - mouseY;
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    rotateObj(deltaX, deltaY);
+  }
+
+  function onMouseUp(e) {
+    e.preventDefault();
+    window.removeEventListener('mousemove', onMouseMove);
+    window.removeEventListener('mouseup', onMouseUp);
+  }
+
+  function rotateObj(deltaX, deltaY) {
+    obj.rotation[axis] += deltaX / 100;
+    // obj.rotation.y += deltaY / 100;
+  }
+
+  window.addEventListener('mousemove', onMouseMove, false);
+  window.addEventListener('mouseup', onMouseUp, false);
 }
 
 /**
@@ -61,39 +92,46 @@ export default function initRotate(renderer, scene, camera) {
         return rotate(rubiks, e);
       }
 
+      const selectedLayer = 'y';
+
       /* WORK IN PROGRESS YOU ARE HERE */
       // Put all of the cubes in the layer we want to turn
       // into a group so that we can turn them together
-      const selectedCubeLayer = Math.round(selectedCube.position["x"]);
+      const selectedCubeLayer = Math.round(
+        selectedCube.position[selectedLayer]
+      );
       const group = new THREE.Group();
       const selection = rubiks.children.filter(
-        cube => selectedCubeLayer === Math.round(cube.position["x"])
+        cube => selectedCubeLayer === Math.round(cube.position[selectedLayer])
       );
       selection.forEach(cube => group.add(cube));
       rubiks.add(group);
 
-      let step = 0;
+      // let step = 0;
 
-      const ROTATION_SPEED = 3;
-      const direction = 1;
+      // const ROTATION_SPEED = 3;
+      // const direction = 1;
 
       // Execute the turn in the given direcftion
-      function executeTurn() {
-        if (step < THREE.Math.degToRad(90)) {
-          step += THREE.Math.degToRad(ROTATION_SPEED);
-          group.rotation["x"] = step * direction;
-          requestAnimationFrame(executeTurn);
-        } else {
-          // When the turn is complete, reparent the cubes back to the main
-          // rubiks cube
-          selection.forEach(cube => rubiks.attach(cube));
-          rubiks.remove(group);
-        }
-      }
+      // function executeTurn() {
+      //   if (step < THREE.Math.degToRad(90)) {
+      //     step += THREE.Math.degToRad(ROTATION_SPEED);
+      //     group.rotation["x"] = step * direction;
+      //     requestAnimationFrame(executeTurn);
+      //   } else {
+      //     // When the turn is complete, reparent the cubes back to the main
+      //     // rubiks cube
+      //     selection.forEach(cube => rubiks.attach(cube));
+      //     rubiks.remove(group);
+      //   }
+      // }
+      // executeTurn();
 
-      executeTurn();
+      turn(group, e, selectedLayer);
+      // selection.forEach(cube => rubiks.attach(cube));
+      // rubiks.remove(group);
     }
   };
 
-  renderer.domElement.addEventListener("mousedown", handleRotate, false);
+  renderer.domElement.addEventListener('mousedown', handleRotate, false);
 }
