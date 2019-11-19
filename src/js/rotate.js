@@ -40,9 +40,11 @@ function rotate(obj, evt) {
   window.addEventListener('mouseup', onMouseUp, false);
 }
 
-function turn(obj, evt, axis = 'x') {
+function turn(obj, evt, axis = 'x', callback) {
+  const direction = 1;
   let mouseX = evt.clientX;
   let mouseY = evt.clientY;
+  let step = 0;
 
   function onMouseMove(e) {
     evt.preventDefault();
@@ -60,11 +62,14 @@ function turn(obj, evt, axis = 'x') {
     e.preventDefault();
     window.removeEventListener('mousemove', onMouseMove);
     window.removeEventListener('mouseup', onMouseUp);
+    callback();
   }
 
   function rotateObj(deltaX, deltaY) {
-    obj.rotation[axis] += deltaX / 100;
-    // obj.rotation.y += deltaY / 100;
+    if (obj.rotation[axis] < THREE.Math.degToRad(90)) {
+      return (obj.rotation[axis] += THREE.Math.degToRad(deltaX));
+    }
+    return (obj.rotation[axis] = THREE.Math.degToRad(90));
   }
 
   window.addEventListener('mousemove', onMouseMove, false);
@@ -127,9 +132,10 @@ export default function initRotate(renderer, scene, camera) {
       // }
       // executeTurn();
 
-      turn(group, e, selectedLayer);
-      // selection.forEach(cube => rubiks.attach(cube));
-      // rubiks.remove(group);
+      turn(group, e, selectedLayer, () => {
+        selection.forEach(cube => rubiks.attach(cube));
+        rubiks.remove(group);
+      });
     }
   };
 
