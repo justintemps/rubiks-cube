@@ -1,6 +1,6 @@
-import * as THREE from 'three';
-import { enableRotation } from '/src/js/controls';
-import RayCaster from '/src/js/raycaster';
+import * as THREE from "three";
+import { enableRotation } from "/src/js/controls";
+import RayCaster from "/src/js/raycaster";
 
 /**
  * Takes an Object3D and an event from a handler
@@ -27,8 +27,8 @@ function rotate(obj, evt) {
 
   function onMouseUp(e) {
     e.preventDefault();
-    window.removeEventListener('mousemove', onMouseMove);
-    window.removeEventListener('mouseup', onMouseUp);
+    window.removeEventListener("mousemove", onMouseMove);
+    window.removeEventListener("mouseup", onMouseUp);
   }
 
   function rotateObj(deltaX, deltaY) {
@@ -36,15 +36,14 @@ function rotate(obj, evt) {
     obj.rotation.y += deltaY / 100;
   }
 
-  window.addEventListener('mousemove', onMouseMove, false);
-  window.addEventListener('mouseup', onMouseUp, false);
+  window.addEventListener("mousemove", onMouseMove, false);
+  window.addEventListener("mouseup", onMouseUp, false);
 }
 
-function turn(obj, evt, axis = 'x', callback) {
-  const direction = 1;
+function turn(obj, evt, axis = "x", callback) {
+  let direction;
   let mouseX = evt.clientX;
   let mouseY = evt.clientY;
-  let step = 0;
 
   function onMouseMove(e) {
     evt.preventDefault();
@@ -60,20 +59,24 @@ function turn(obj, evt, axis = 'x', callback) {
 
   function onMouseUp(e) {
     e.preventDefault();
-    window.removeEventListener('mousemove', onMouseMove);
-    window.removeEventListener('mouseup', onMouseUp);
+    window.removeEventListener("mousemove", onMouseMove);
+    window.removeEventListener("mouseup", onMouseUp);
     callback();
   }
 
   function rotateObj(deltaX, deltaY) {
-    if (obj.rotation[axis] < THREE.Math.degToRad(90)) {
+    // Save the current object rotation
+    const step = obj.rotation[axis];
+    // If the rotation is less than 90 degrees, turn by delta
+    if (Math.abs(step) < THREE.Math.degToRad(90)) {
       return (obj.rotation[axis] += THREE.Math.degToRad(deltaX));
     }
-    return (obj.rotation[axis] = THREE.Math.degToRad(90));
+    // Lock the rotation at +/-90 degrees to complete the turn
+    return (obj.rotation[axis] = Math.sign(step) * THREE.Math.degToRad(90));
   }
 
-  window.addEventListener('mousemove', onMouseMove, false);
-  window.addEventListener('mouseup', onMouseUp, false);
+  window.addEventListener("mousemove", onMouseMove, false);
+  window.addEventListener("mouseup", onMouseUp, false);
 }
 
 /**
@@ -97,7 +100,7 @@ export default function initRotate(renderer, scene, camera) {
         return rotate(rubiks, e);
       }
 
-      const selectedLayer = 'y';
+      const selectedLayer = "y";
 
       /* WORK IN PROGRESS YOU ARE HERE */
       // Put all of the cubes in the layer we want to turn
@@ -139,5 +142,5 @@ export default function initRotate(renderer, scene, camera) {
     }
   };
 
-  renderer.domElement.addEventListener('mousedown', handleRotate, false);
+  renderer.domElement.addEventListener("mousedown", handleRotate, false);
 }
