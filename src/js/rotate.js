@@ -1,6 +1,6 @@
-import * as THREE from "three";
-import { enableRotation } from "/src/js/controls";
-import RayCaster from "/src/js/raycaster";
+import * as THREE from 'three';
+import { enableRotation } from '/src/js/controls';
+import RayCaster from '/src/js/raycaster';
 
 /**
  * Takes an Object3D and an event from a handler
@@ -27,8 +27,8 @@ function rotate(obj, evt) {
 
   function onMouseUp(e) {
     e.preventDefault();
-    window.removeEventListener("mousemove", onMouseMove);
-    window.removeEventListener("mouseup", onMouseUp);
+    window.removeEventListener('mousemove', onMouseMove);
+    window.removeEventListener('mouseup', onMouseUp);
   }
 
   function rotateObj(deltaX, deltaY) {
@@ -36,47 +36,51 @@ function rotate(obj, evt) {
     obj.rotation.y += deltaY / 100;
   }
 
-  window.addEventListener("mousemove", onMouseMove, false);
-  window.addEventListener("mouseup", onMouseUp, false);
+  window.addEventListener('mousemove', onMouseMove, false);
+  window.addEventListener('mouseup', onMouseUp, false);
 }
 
-function turn(obj, evt, axis = "x", callback) {
-  let direction;
+function turn(obj, evt, axis = 'x', callback) {
   let mouseX = evt.clientX;
   let mouseY = evt.clientY;
 
+  // If it moves by
+  function selectLayer() {
+    console.log({
+      mouseX,
+      mouseY
+    });
+    // console.log(obj);
+  }
+
   function onMouseMove(e) {
     evt.preventDefault();
-    // the object should rotate around the y axis when
-    // the mouse moves across the x axis and around the y
-    // axis when the mouse moves across the y axis
-    let deltaY = e.clientX - mouseX;
-    let deltaX = e.clientY - mouseY;
+    let deltaX = e.clientX - mouseX;
+    // let deltaY = e.clientY - mouseY;
     mouseX = e.clientX;
     mouseY = e.clientY;
-    rotateObj(deltaX, deltaY);
+    turnObj(deltaX);
   }
 
   function onMouseUp(e) {
     e.preventDefault();
-    window.removeEventListener("mousemove", onMouseMove);
-    window.removeEventListener("mouseup", onMouseUp);
+    window.removeEventListener('mousemove', onMouseMove);
+    window.removeEventListener('mouseup', onMouseUp);
     callback();
   }
 
-  function rotateObj(deltaX, deltaY) {
-    // Save the current object rotation
+  function turnObj(delta) {
+    selectLayer();
     const step = obj.rotation[axis];
-    // If the rotation is less than 90 degrees, turn by delta
-    if (Math.abs(step) < THREE.Math.degToRad(90)) {
-      return (obj.rotation[axis] += THREE.Math.degToRad(deltaX));
+    const limit = THREE.Math.degToRad(90);
+    if (Math.abs(step) < limit) {
+      return (obj.rotation[axis] += THREE.Math.degToRad(delta));
     }
-    // Lock the rotation at +/-90 degrees to complete the turn
     return (obj.rotation[axis] = Math.sign(step) * THREE.Math.degToRad(90));
   }
 
-  window.addEventListener("mousemove", onMouseMove, false);
-  window.addEventListener("mouseup", onMouseUp, false);
+  window.addEventListener('mousemove', onMouseMove, false);
+  window.addEventListener('mouseup', onMouseUp, false);
 }
 
 /**
@@ -100,11 +104,8 @@ export default function initRotate(renderer, scene, camera) {
         return rotate(rubiks, e);
       }
 
-      const selectedLayer = "y";
+      const selectedLayer = 'x';
 
-      /* WORK IN PROGRESS YOU ARE HERE */
-      // Put all of the cubes in the layer we want to turn
-      // into a group so that we can turn them together
       const selectedCubeLayer = Math.round(
         selectedCube.position[selectedLayer]
       );
@@ -115,26 +116,6 @@ export default function initRotate(renderer, scene, camera) {
       selection.forEach(cube => group.add(cube));
       rubiks.add(group);
 
-      // let step = 0;
-
-      // const ROTATION_SPEED = 3;
-      // const direction = 1;
-
-      // Execute the turn in the given direcftion
-      // function executeTurn() {
-      //   if (step < THREE.Math.degToRad(90)) {
-      //     step += THREE.Math.degToRad(ROTATION_SPEED);
-      //     group.rotation["x"] = step * direction;
-      //     requestAnimationFrame(executeTurn);
-      //   } else {
-      //     // When the turn is complete, reparent the cubes back to the main
-      //     // rubiks cube
-      //     selection.forEach(cube => rubiks.attach(cube));
-      //     rubiks.remove(group);
-      //   }
-      // }
-      // executeTurn();
-
       turn(group, e, selectedLayer, () => {
         selection.forEach(cube => rubiks.attach(cube));
         rubiks.remove(group);
@@ -142,5 +123,5 @@ export default function initRotate(renderer, scene, camera) {
     }
   };
 
-  renderer.domElement.addEventListener("mousedown", handleRotate, false);
+  renderer.domElement.addEventListener('mousedown', handleRotate, false);
 }

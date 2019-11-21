@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import dat from 'dat.gui';
+// import dat from 'dat.gui';
 import cubeFace from '/src/assets/images/rubiks-face.png';
 import initRotate from '/src/js/rotate';
-import Turn from '/src/js/turn';
+// import Turn from '/src/js/turn';
 // import RayCaster from '/src/js/raycaster';
 
 import { initStats, initRenderer, initCamera } from './utils';
@@ -39,7 +39,8 @@ export default function() {
   // 1. Build our rubiks cube
   // 2. Add it to the scene
   // 3. Create our turn function
-  let materials, rubiks, turn;
+  let materials, rubiks;
+  // let turn;
   const loader = new THREE.TextureLoader();
   loader.setCrossOrigin('');
 
@@ -74,34 +75,34 @@ export default function() {
     rubiks.position.set(0, 3, 0);
     scene.add(rubiks);
 
-    turn = Turn(rubiks);
+    // turn = Turn(rubiks);
     initRotate(renderer, scene, camera);
   });
 
-  const controls = {
-    turnX0: () => turn('x', 0),
-    turnX1: () => turn('x', 1),
-    turnX2: () => turn('x', 2),
-    turnY0: () => turn('y', 0),
-    turnY1: () => turn('y', 1),
-    turnY2: () => turn('y', 2),
-    turnZ0: () => turn('z', 0),
-    turnZ1: () => turn('z', 1),
-    turnZ2: () => turn('z', 2)
-  };
+  // const controls = {
+  //   turnX0: () => turn('x', 0),
+  //   turnX1: () => turn('x', 1),
+  //   turnX2: () => turn('x', 2),
+  //   turnY0: () => turn('y', 0),
+  //   turnY1: () => turn('y', 1),
+  //   turnY2: () => turn('y', 2),
+  //   turnZ0: () => turn('z', 0),
+  //   turnZ1: () => turn('z', 1),
+  //   turnZ2: () => turn('z', 2)
+  // };
 
-  const gui = new dat.GUI();
-  const guiFolder1 = gui.addFolder('Rubiks Controls');
+  // const gui = new dat.GUI();
+  // const guiFolder1 = gui.addFolder('Rubiks Controls');
 
-  guiFolder1.add(controls, 'turnX0');
-  guiFolder1.add(controls, 'turnX1');
-  guiFolder1.add(controls, 'turnX2');
-  guiFolder1.add(controls, 'turnY0');
-  guiFolder1.add(controls, 'turnY1');
-  guiFolder1.add(controls, 'turnY2');
-  guiFolder1.add(controls, 'turnZ0');
-  guiFolder1.add(controls, 'turnZ1');
-  guiFolder1.add(controls, 'turnZ2');
+  // guiFolder1.add(controls, 'turnX0');
+  // guiFolder1.add(controls, 'turnX1');
+  // guiFolder1.add(controls, 'turnX2');
+  // guiFolder1.add(controls, 'turnY0');
+  // guiFolder1.add(controls, 'turnY1');
+  // guiFolder1.add(controls, 'turnY2');
+  // guiFolder1.add(controls, 'turnZ0');
+  // guiFolder1.add(controls, 'turnZ1');
+  // guiFolder1.add(controls, 'turnZ2');
 
   function render() {
     stats.update();
