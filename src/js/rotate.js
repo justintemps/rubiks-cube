@@ -40,43 +40,51 @@ function rotate(obj, evt) {
   window.addEventListener('mouseup', onMouseUp, false);
 }
 
-function turn(obj, evt, axis = 'x', callback) {
+function turn(selectedCube, rubiks, evt) {
   let mouseX = evt.clientX;
   let mouseY = evt.clientY;
+  let turnAxis = null;
+  let group;
+  let selection;
 
-  // If it moves by
-  function selectLayer() {
-    console.log({
-      mouseX,
-      mouseY
-    });
-    // console.log(obj);
+  function detectTurnAxis(deltaX, deltaY) {
+    if (turnAxis === null) {
+      turnAxis = Math.abs(deltaX) > Math.abs(deltaY) ? 'x' : 'y';
+      const selectedCubeLayer = Math.round(selectedCube.position[turnAxis]);
+      group = new THREE.Group();
+      selection = rubiks.children.filter(
+        cube => selectedCubeLayer === Math.round(cube.position[turnAxis])
+      );
+      selection.forEach(cube => group.add(cube));
+      rubiks.add(group);
+    }
   }
 
   function onMouseMove(e) {
     evt.preventDefault();
-    let deltaX = e.clientX - mouseX;
-    // let deltaY = e.clientY - mouseY;
+    let deltaY = e.clientX - mouseX;
+    let deltaX = e.clientY - mouseY;
     mouseX = e.clientX;
     mouseY = e.clientY;
-    turnObj(deltaX);
+    detectTurnAxis(deltaX, deltaY);
+    executeTurn(deltaX);
   }
 
   function onMouseUp(e) {
     e.preventDefault();
     window.removeEventListener('mousemove', onMouseMove);
     window.removeEventListener('mouseup', onMouseUp);
-    callback();
+    selection.forEach(cube => rubiks.attach(cube));
+    rubiks.remove(group);
   }
 
-  function turnObj(delta) {
-    selectLayer();
-    const step = obj.rotation[axis];
+  function executeTurn(delta) {
+    const step = group.rotation[turnAxis];
     const limit = THREE.Math.degToRad(90);
     if (Math.abs(step) < limit) {
-      return (obj.rotation[axis] += THREE.Math.degToRad(delta));
+      return (group.rotation[turnAxis] += THREE.Math.degToRad(delta));
     }
-    return (obj.rotation[axis] = Math.sign(step) * THREE.Math.degToRad(90));
+    return (group.rotation[turnAxis] = Math.sign(step) * THREE.Math.degToRad(90));
   }
 
   window.addEventListener('mousemove', onMouseMove, false);
@@ -104,22 +112,24 @@ export default function initRotate(renderer, scene, camera) {
         return rotate(rubiks, e);
       }
 
-      const selectedLayer = 'x';
+      // const selectedLayer = 'x';
 
-      const selectedCubeLayer = Math.round(
-        selectedCube.position[selectedLayer]
-      );
-      const group = new THREE.Group();
-      const selection = rubiks.children.filter(
-        cube => selectedCubeLayer === Math.round(cube.position[selectedLayer])
-      );
-      selection.forEach(cube => group.add(cube));
-      rubiks.add(group);
+      // const selectedCubeLayer = Math.round(
+      //   selectedCube.position[selectedLayer]
+      // );
+      // const group = new THREE.Group();
+      // const selection = rubiks.children.filter(
+      //   cube => selectedCubeLayer === Math.round(cube.position[selectedLayer])
+      // );
+      // selection.forEach(cube => group.add(cube));
+      // rubiks.add(group);
 
-      turn(group, e, selectedLayer, () => {
-        selection.forEach(cube => rubiks.attach(cube));
-        rubiks.remove(group);
-      });
+      // turn(group, e, selectedLayer, () => {
+      //   selection.forEach(cube => rubiks.attach(cube));
+      //   rubiks.remove(group);
+      // });
+
+      turn(selectedCube, rubiks, e);
     }
   };
 
