@@ -44,8 +44,8 @@ function turn(selectedCube, rubiks, evt) {
   let mouseX = evt.clientX;
   let mouseY = evt.clientY;
   let turnAxis = null;
+  let selection = [];
   let group;
-  let selection;
 
   function setTurnAxis(deltaX, deltaY) {
     if (turnAxis === null) {
@@ -110,6 +110,7 @@ export default function initRotate(renderer, scene, camera) {
     const intersects = rayCaster(e);
     if (intersects.length > 0) {
       const selectedCube = intersects[0].object;
+      console.log(intersects[0].face);
       const rubiks = intersects[0].object.parent;
 
       if (state.isEnabled) {
