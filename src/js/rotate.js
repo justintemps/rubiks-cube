@@ -47,7 +47,7 @@ function turn(selectedCube, rubiks, evt) {
   let group;
   let selection;
 
-  function detectTurnAxis(deltaX, deltaY) {
+  function setTurnAxis(deltaX, deltaY) {
     if (turnAxis === null) {
       turnAxis = Math.abs(deltaX) > Math.abs(deltaY) ? 'x' : 'y';
       const selectedCubeLayer = Math.round(selectedCube.position[turnAxis]);
@@ -62,12 +62,14 @@ function turn(selectedCube, rubiks, evt) {
 
   function onMouseMove(e) {
     evt.preventDefault();
-    let deltaY = e.clientX - mouseX;
-    let deltaX = e.clientY - mouseY;
+    const delta = {
+      y: e.clientX - mouseX,
+      x: e.clientY - mouseY
+    };
     mouseX = e.clientX;
     mouseY = e.clientY;
-    detectTurnAxis(deltaX, deltaY);
-    executeTurn(deltaX);
+    setTurnAxis(delta.x, delta.y);
+    executeTurn(delta);
   }
 
   function onMouseUp(e) {
@@ -79,12 +81,14 @@ function turn(selectedCube, rubiks, evt) {
   }
 
   function executeTurn(delta) {
+    const turnDelta = delta[turnAxis];
     const step = group.rotation[turnAxis];
     const limit = THREE.Math.degToRad(90);
     if (Math.abs(step) < limit) {
-      return (group.rotation[turnAxis] += THREE.Math.degToRad(delta));
+      return (group.rotation[turnAxis] += THREE.Math.degToRad(turnDelta));
     }
-    return (group.rotation[turnAxis] = Math.sign(step) * THREE.Math.degToRad(90));
+    return (group.rotation[turnAxis] =
+      Math.sign(step) * THREE.Math.degToRad(90));
   }
 
   window.addEventListener('mousemove', onMouseMove, false);
@@ -111,23 +115,6 @@ export default function initRotate(renderer, scene, camera) {
       if (state.isEnabled) {
         return rotate(rubiks, e);
       }
-
-      // const selectedLayer = 'x';
-
-      // const selectedCubeLayer = Math.round(
-      //   selectedCube.position[selectedLayer]
-      // );
-      // const group = new THREE.Group();
-      // const selection = rubiks.children.filter(
-      //   cube => selectedCubeLayer === Math.round(cube.position[selectedLayer])
-      // );
-      // selection.forEach(cube => group.add(cube));
-      // rubiks.add(group);
-
-      // turn(group, e, selectedLayer, () => {
-      //   selection.forEach(cube => rubiks.attach(cube));
-      //   rubiks.remove(group);
-      // });
 
       turn(selectedCube, rubiks, e);
     }
