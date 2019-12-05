@@ -110,7 +110,17 @@ export default function initRotate(renderer, scene, camera) {
     const intersects = rayCaster(e);
     if (intersects.length > 0) {
       const selectedCube = intersects[0].object;
-      console.log(intersects[0].face);
+
+      /*--- Sandbox ----*/
+      const vector = new THREE.Vector3();
+      vector.setFromMatrixPosition(selectedCube.matrixWorld);
+
+      console.log({
+        object: intersects[0].object.uuid,
+        vector
+      });
+      /*--- Sandbox ----*/
+
       const rubiks = intersects[0].object.parent;
 
       if (state.isEnabled) {
