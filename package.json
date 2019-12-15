@@ -16,6 +16,7 @@
   "dependencies": {
     "dat.gui": "^0.7.6",
     "install": "^0.13.0",
+    "lodash.isequal": "^4.5.0",
     "normalize.css": "^8.0.1",
     "npm": "^6.12.0",
     "src": "^1.1.2",
